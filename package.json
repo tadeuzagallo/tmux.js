@@ -1,0 +1,27 @@
+{
+  "name": "tmux.js",
+  "description": "A web version of my terminal",
+  "version": "0.0.1",
+  "keywords": [
+    "terminal",
+    "zsh",
+    "tmux"
+  ],
+  "homepage": "https://github.com/tadeuzagallo/tmux.js",
+  "bugs": {
+    "url": "https://github.com/tadeuzagallo/tmux.js/issues",
+    "email": "tadeuzagallo@gmail.com"
+  },
+  "license": "MIT",
+  "main": "./tmux.js",
+  "author": {
+    "name": "Tadeu Zagallo",
+    "email": "tadeuzagallo@gmail.com",
+    "url": "tadeuzagallo.com"
+  },
+  "devDependencies": {
+    "browserify": "^3.46.0",
+    "uglifyjs": "^2.3.6",
+    "zsh.js": "*"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "tmux.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/tadeuzagallo/tmux.js",
+  "authors": [
+    "Tadeu Zagallo <tadeuzagallo@gmail.com>"
+  ],
+  "description": "tmux plugin for zsh.js",
+  "main": "tmux.js",
+  "keywords": [
+    "tmux",
+    "zsh",
+    "js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
+}

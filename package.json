@@ -12,6 +12,7 @@
     "url": "https://github.com/tadeuzagallo/tmux.js/issues",
     "email": "tadeuzagallo@gmail.com"
   },
+  "repository": "tadeuzagallo/tmux.js",
   "license": "MIT",
   "main": "./tmux.js",
   "author": {

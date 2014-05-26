@@ -10,7 +10,7 @@ var zsh = require('zsh.js'),
     tmux = require('tmux.js');
 
 zsh.create('container');
-tmux.init(Zsh);
+tmux.init(zsh);
 ```
 
 ## TODO ##

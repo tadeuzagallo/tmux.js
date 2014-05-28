@@ -1,3 +1,5 @@
+'use strict';
+
 var Tmux = {};
 var Terminal;
 var windows = [];

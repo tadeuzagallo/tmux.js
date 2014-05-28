@@ -22,6 +22,29 @@ Tmux.init = function (terminal) {
   Terminal._statusbar = statusList;
 
   this.newWindow();
+
+  var _onkeydown = window.onkeydown || function () {};
+  var waiting = false;
+  window.onkeydown = function (event) {
+    if (waiting) {
+      console.log('waiting');
+      waiting = false;
+
+      if (event.keyCode === 67) { // c
+        Tmux.newWindow();
+      }
+
+      return;
+    }
+
+    console.log(event);
+    if (event.keyCode === 66 && event.ctrlKey) { // C-b
+      console.log('here');
+      waiting = true;
+    } else {
+      _onkeydown(event);
+    }
+  };
 };
 
 Tmux.createTabLabel = function (indexOnly) {

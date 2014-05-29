@@ -1,12 +1,14 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"N8OV1Y":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"tmux.js":[function(require,module,exports){
+module.exports=require('N8OV1Y');
+},{}],"N8OV1Y":[function(require,module,exports){
 'use strict';
-
 var Tmux = {};
+var FS = require('zsh.js/lib/fs');
 var Terminal;
 var windows = [];
 var index = 0;
 
-Tmux.init = function (terminal) {
+Tmux.init = function (terminal, fs) {
   Terminal = terminal;
 
   Terminal.container.innerHTML = '';
@@ -126,6 +128,7 @@ var using = null;
 Tmux.use = function (window) {
   if (using) {
     using.tab.tab.className = false;
+    using.currentPath = FS.currentPath;
   }
 
   Terminal._container.innerHTML = '';
@@ -135,8 +138,13 @@ Tmux.use = function (window) {
   Terminal.statusbar = window.tab.ps;
 
   window.tab.tab.className = 'active';
-  Terminal.update();
 
+  if (window.currentPath) {
+    console.log('switching currentPath from "%s" to "%s"', FS.currentPath, window.currentPath);
+    FS.currentPath = window.currentPath;
+  }
+
+  Terminal.update();
   using = window;
 };
 
@@ -155,6 +163,4 @@ Tmux.update = function () {
 
 module.exports = Tmux;
 
-},{}],"tmux.js":[function(require,module,exports){
-module.exports=require('N8OV1Y');
 },{}]},{},["N8OV1Y"])

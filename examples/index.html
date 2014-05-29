@@ -4,19 +4,20 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Terminal.js</title>
     <link href="css/main.css" rel="stylesheet" />
-    <link href="../node_modules/zsh.js/build/terminal.min.css" rel="stylesheet" />
+    <link href="../node_modules/zsh.js/dist/zsh.min.css" rel="stylesheet" />
   </head>
   <body>
     <div id="container"></div>
 
-    <script src="../node_modules/zsh.js/build/terminal.min.js"></script>
+    <script src="../node_modules/zsh.js/dist/zsh.js"></script>
     <script src="../dist/tmux.min.js"></script>
     <script>
 var zsh = require('zsh.js'),
-    tmux = require('tmux.js');
+    tmux = require('tmux.js'),
+    fs = require('zsh.js/lib/fs');
 
 zsh.create('container');
-tmux.init(zsh);
+tmux.init(zsh, fs);
     </script>
   </body>
 </html>

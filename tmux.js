@@ -1,11 +1,11 @@
 'use strict';
-
 var Tmux = {};
+var FS = require('zsh.js/lib/fs');
 var Terminal;
 var windows = [];
 var index = 0;
 
-Tmux.init = function (terminal) {
+Tmux.init = function (terminal, fs) {
   Terminal = terminal;
 
   Terminal.container.innerHTML = '';
@@ -125,6 +125,7 @@ var using = null;
 Tmux.use = function (window) {
   if (using) {
     using.tab.tab.className = false;
+    using.currentPath = FS.currentPath;
   }
 
   Terminal._container.innerHTML = '';
@@ -134,8 +135,12 @@ Tmux.use = function (window) {
   Terminal.statusbar = window.tab.ps;
 
   window.tab.tab.className = 'active';
-  Terminal.update();
 
+  if (window.currentPath) {
+    FS.currentPath = window.currentPath;
+  }
+
+  Terminal.update();
   using = window;
 };
 

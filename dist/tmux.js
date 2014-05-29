@@ -44,6 +44,16 @@ Tmux.init = function (terminal) {
       _onkeydown(event);
     }
   };
+
+  Object.defineProperty(window, 'onkeydown', {
+    set: function (value) {
+      console.log(value);
+      _onkeydown = value;
+    },
+    get: function () {
+      return _onkeydown;
+    }
+  });
 };
 
 Tmux.createTabLabel = function (indexOnly) {

@@ -113,6 +113,7 @@ Tmux.newWindow = function () {
     window: w
   };
 
+  index = windows.length;
   windows.push(window);
 
   window.tab = this.createTabLabel();

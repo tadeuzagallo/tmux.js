@@ -36,6 +36,7 @@ Tmux.init = function (terminal) {
         case 67: // C
           Tmux.newWindow();
           break;
+        case 37: // left
         case 72: // H
           index--;
 
@@ -45,6 +46,7 @@ Tmux.init = function (terminal) {
 
           Tmux.use(windows[index]);
           break;
+        case 39: // right
         case 76: // L
           index++;
 

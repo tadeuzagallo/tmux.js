@@ -4,6 +4,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 var Tmux = {};
 var Terminal;
 var windows = [];
+var index = 0;
 
 Tmux.init = function (terminal) {
   Terminal = terminal;
@@ -31,8 +32,28 @@ Tmux.init = function (terminal) {
     if (waiting) {
       waiting = false;
 
-      if (event.keyCode === 67) { // c
-        Tmux.newWindow();
+      switch (event.keyCode) {
+        case 67: // C
+          Tmux.newWindow();
+          break;
+        case 72: // H
+          index--;
+
+          if (index < 0) {
+            index = windows.length - 1;
+          }
+
+          Tmux.use(windows[index]);
+          break;
+        case 76: // L
+          index++;
+
+          if (index >= windows.length) {
+            index = 0;
+          }
+
+          Tmux.use(windows[index]);
+          break;
       }
 
       return;
@@ -47,7 +68,6 @@ Tmux.init = function (terminal) {
 
   Object.defineProperty(window, 'onkeydown', {
     set: function (value) {
-      console.log(value);
       _onkeydown = value;
     },
     get: function () {

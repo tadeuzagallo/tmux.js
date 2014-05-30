@@ -140,7 +140,6 @@ Tmux.use = function (window) {
   window.tab.tab.className = 'active';
 
   if (window.currentPath) {
-    console.log('switching currentPath from "%s" to "%s"', FS.currentPath, window.currentPath);
     FS.currentPath = window.currentPath;
   }
 

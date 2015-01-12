@@ -1,4 +1,6 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"N8OV1Y":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"tmux.js":[function(require,module,exports){
+module.exports=require('N8OV1Y');
+},{}],"N8OV1Y":[function(require,module,exports){
 'use strict';
 var Tmux = {};
 var FS = require('zsh.js/lib/fs');
@@ -20,7 +22,7 @@ Tmux.init = function (terminal) {
   Terminal.statusbar = null;
 
   var statusList = document.createElement('ul');
-  this.rootTab = Tmux.createTabLabel(true).tab;
+  this.rootTab = Tmux.createTabLabel(true, 0).tab;
   statusbar.appendChild(statusList);
   Terminal._statusbar = statusList;
 
@@ -59,7 +61,7 @@ Tmux.init = function (terminal) {
         case 81: // Q
           Tmux.removeWindow(windows[index]);
           windows.splice(index, 1);
-          
+
           if (windows.length) {
             index--;
             if (index < 0) {
@@ -90,7 +92,7 @@ Tmux.init = function (terminal) {
   });
 };
 
-Tmux.createTabLabel = function (indexOnly) {
+Tmux.createTabLabel = function (indexOnly, id) {
   var tab = document.createElement('li');
 
   var data = document.createElement('span');
@@ -98,7 +100,7 @@ Tmux.createTabLabel = function (indexOnly) {
 
   var index = document.createElement('span');
   index.className = 'index';
-  index.innerText = windows.length;
+  index.innerText = id;
 
   data.appendChild(index);
   tab.appendChild(data);
@@ -120,15 +122,23 @@ Tmux.newWindow = function () {
   var w = document.createElement('div');
   w.className = 'tmux';
 
+  var id = 1;
+  for (var i = 0, l = windows.length; i < l; i++) {
+    if (windows[i].id !== id) {
+      break;
+    } else {
+      id++;
+    }
+  }
+
   var window = {
-    id: windows.count,
-    window: w
+    id: id,
+    window: w,
+    tab: this.createTabLabel(false, id)
   };
 
-  index = windows.length;
+  index = i;
   windows.push(window);
-
-  window.tab = this.createTabLabel();
 
   this.use(window);
   this.update();
@@ -176,6 +186,4 @@ Tmux.removeWindow = function (window) {
 
 module.exports = Tmux;
 
-},{}],"tmux.js":[function(require,module,exports){
-module.exports=require('N8OV1Y');
 },{}]},{},["N8OV1Y"])

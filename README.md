@@ -13,6 +13,13 @@ zsh.create('container');
 tmux.init(zsh);
 ```
 
-## TODO ##
+## Current available commands
 
-* Even though create new windows is already possible, there is no shortcut for it yet
+Tmux prefix is set to the default, `C-b`
+
+And right now you can:
+
+* Create a new window with `C-b c`
+* Move to the window at right with `C-b <right>` or `C-b l`
+* Move to the window at left with `C-b <left>` or `C-b h`
+* Delete the current window with `C-b q`

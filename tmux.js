@@ -5,7 +5,7 @@ var Terminal;
 var windows = [];
 var index = 0;
 
-Tmux.init = function (terminal, fs) {
+Tmux.init = function (terminal) {
   Terminal = terminal;
 
   Terminal.container.innerHTML = '';
@@ -74,7 +74,7 @@ Tmux.init = function (terminal, fs) {
 
     if (event.keyCode === 66 && event.ctrlKey) { // C-b
       waiting = true;
-    } else {
+    } else if (_onkeydown) {
       _onkeydown(event);
     }
   };

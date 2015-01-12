@@ -1,6 +1,4 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"tmux.js":[function(require,module,exports){
-module.exports=require('N8OV1Y');
-},{}],"N8OV1Y":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"N8OV1Y":[function(require,module,exports){
 'use strict';
 var Tmux = {};
 var FS = require('zsh.js/lib/fs');
@@ -8,7 +6,7 @@ var Terminal;
 var windows = [];
 var index = 0;
 
-Tmux.init = function (terminal, fs) {
+Tmux.init = function (terminal) {
   Terminal = terminal;
 
   Terminal.container.innerHTML = '';
@@ -58,6 +56,18 @@ Tmux.init = function (terminal, fs) {
 
           Tmux.use(windows[index]);
           break;
+        case 81: // Q
+          Tmux.removeWindow(windows[index]);
+          windows.splice(index, 1);
+          
+          if (windows.length) {
+            index--;
+            if (index < 0) {
+              index = 0;
+            }
+
+            Tmux.use(windows[index]);
+          }
       }
 
       return;
@@ -65,7 +75,7 @@ Tmux.init = function (terminal, fs) {
 
     if (event.keyCode === 66 && event.ctrlKey) { // C-b
       waiting = true;
-    } else {
+    } else if (_onkeydown) {
       _onkeydown(event);
     }
   };
@@ -160,6 +170,12 @@ Tmux.update = function () {
   });
 };
 
+Tmux.removeWindow = function (window) {
+  Terminal._statusbar.removeChild(window.tab.tab);
+};
+
 module.exports = Tmux;
 
+},{}],"tmux.js":[function(require,module,exports){
+module.exports=require('N8OV1Y');
 },{}]},{},["N8OV1Y"])

@@ -55,6 +55,18 @@ Tmux.init = function (terminal, fs) {
 
           Tmux.use(windows[index]);
           break;
+        case 81: // Q
+          Tmux.removeWindow(windows[index]);
+          windows.splice(index, 1);
+
+          if (windows.length) {
+            index--;
+            if (index < 0) {
+              index = 0;
+            }
+
+            Tmux.use(windows[index]);
+          }
       }
 
       return;
@@ -155,6 +167,10 @@ Tmux.update = function () {
   windows.forEach(function (window) {
     Terminal._statusbar.appendChild(window.tab.tab);
   });
+};
+
+Tmux.removeWindow = function (window) {
+  Terminal._statusbar.removeChild(window.tab.tab);
 };
 
 module.exports = Tmux;

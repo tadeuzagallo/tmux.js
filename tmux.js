@@ -1,4 +1,4 @@
-'use strict';
+import Stream from 'zsh.js/lib/stream.js';
 
 export default class Tmux {
   constructor(terminal) {
@@ -30,13 +30,9 @@ export default class Tmux {
   }
 
   listen() {
-    this.keyDownListener = window.onkeydown || function() {};
-    window.onkeydown = this.onKeyDown.bind(this);
-
-    Object.defineProperty(window, 'onkeydown', {
-      set: (value) => this.keyDownListener = value,
-      get: () => this.keyDownListener,
-    });
+    this.originalStdin = this.terminal.stdin;
+    this.terminal.stdin = new Stream();
+    this.terminal.stdin.on('data', (event) => this.onKeyDown(event));
   }
 
   onKeyDown(event) {
@@ -89,8 +85,8 @@ export default class Tmux {
 
     if (event.keyCode === 66 && event.ctrlKey) { // C-b
       this.waiting = true;
-    } else if (this.keyDownListener) {
-      this.keyDownListener(event);
+    } else {
+      this.originalStdin.write(event);
     }
   }
 

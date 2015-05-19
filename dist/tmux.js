@@ -1,5 +1,51 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"tmux.js":[function(require,module,exports){
-module.exports=require('N8OV1Y');
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var Stream = (function () {
+  function Stream() {
+    _classCallCheck(this, Stream);
+
+    this._callbacks = {};
+  }
+
+  _createClass(Stream, [{
+    key: 'on',
+    value: function on(event, callback) {
+      if (!this._callbacks[event]) {
+        this._callbacks[event] = [];
+      }
+
+      this._callbacks[event].push(callback);
+    }
+  }, {
+    key: 'write',
+    value: function write(data) {
+      this.emmit('data', data);
+    }
+  }, {
+    key: 'emmit',
+    value: function emmit(event, data) {
+      var callbacks = this._callbacks[event];
+      callbacks && callbacks.forEach(function (callback) {
+        callback(data);
+      });
+    }
+  }]);
+
+  return Stream;
+})();
+
+exports['default'] = Stream;
+module.exports = exports['default'];
+
 },{}],"N8OV1Y":[function(require,module,exports){
 'use strict';
 
@@ -7,9 +53,29 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+})();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError('Cannot call a class as a function');
+  }
+}
+
+var _zshJsLibStreamJs = require('zsh.js/lib/stream.js');
+
+var _zshJsLibStreamJs2 = _interopRequireDefault(_zshJsLibStreamJs);
 
 var Tmux = (function () {
   function Tmux(terminal) {
@@ -48,16 +114,11 @@ var Tmux = (function () {
     value: function listen() {
       var _this = this;
 
-      this.keyDownListener = window.onkeydown || function () {};
-      window.onkeydown = this.onKeyDown.bind(this);
-
-      Object.defineProperty(window, 'onkeydown', {
-        set: function set(value) {
-          return _this.keyDownListener = value;
-        },
-        get: function get() {
-          return _this.keyDownListener;
-        } });
+      this.originalStdin = this.terminal.stdin;
+      this.terminal.stdin = new _zshJsLibStreamJs2['default']();
+      this.terminal.stdin.on('data', function (event) {
+        return _this.onKeyDown(event);
+      });
     }
   }, {
     key: 'onKeyDown',
@@ -116,8 +177,8 @@ var Tmux = (function () {
       if (event.keyCode === 66 && event.ctrlKey) {
         // C-b
         this.waiting = true;
-      } else if (this.keyDownListener) {
-        this.keyDownListener(event);
+      } else {
+        this.originalStdin.write(event);
       }
     }
   }, {
@@ -129,7 +190,7 @@ var Tmux = (function () {
 
       data.className = 'data';
       index.className = 'index';
-      index.innerText = id;
+      index.innerHTML = id;
 
       tab.appendChild(data);
       data.appendChild(index);
@@ -225,4 +286,6 @@ var Tmux = (function () {
 exports['default'] = Tmux;
 module.exports = exports['default'];
 
+},{"zsh.js/lib/stream.js":1}],"tmux.js":[function(require,module,exports){
+module.exports=require('N8OV1Y');
 },{}]},{},["N8OV1Y"])

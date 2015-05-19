@@ -101,7 +101,7 @@ export default class Tmux {
 
     data.className = 'data';
     index.className = 'index';
-    index.innerText = id;
+    index.innerHTML = id;
 
     tab.appendChild(data);
     data.appendChild(index);

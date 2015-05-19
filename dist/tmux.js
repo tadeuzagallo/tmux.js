@@ -2,188 +2,227 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 module.exports=require('N8OV1Y');
 },{}],"N8OV1Y":[function(require,module,exports){
 'use strict';
-var Tmux = {};
-var FS = require('zsh.js/lib/fs');
-var Terminal;
-var windows = [];
-var index = 0;
 
-Tmux.init = function (terminal) {
-  Terminal = terminal;
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  Terminal.container.innerHTML = '';
-  Terminal.statusbar.innerHTML = '';
-  windows = [];
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  Terminal._container = Terminal.container;
-  Terminal.container = null;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-  var statusbar = Terminal.statusbar;
-  Terminal.statusbar = null;
+var Tmux = (function () {
+  function Tmux(terminal) {
+    _classCallCheck(this, Tmux);
 
-  var statusList = document.createElement('ul');
-  this.rootTab = Tmux.createTabLabel(true, 0).tab;
-  statusbar.appendChild(statusList);
-  Terminal._statusbar = statusList;
+    this.terminal = terminal;
+    this.windows = [];
+    this.index = 0;
+    this.using = null;
+    this.waiting = false;
 
-  this.newWindow();
+    this.setUp();
+    this.listen();
+    this.newWindow();
+  }
 
-  var _onkeydown = window.onkeydown || function () {};
-  var waiting = false;
-  window.onkeydown = function (event) {
-    if (waiting) {
-      waiting = false;
+  _createClass(Tmux, [{
+    key: 'setUp',
+    value: function setUp() {
+      this.terminal.container.innerHTML = '';
+      this.terminal.statusbar.innerHTML = '';
 
-      switch (event.keyCode) {
-        case 67: // C
-          Tmux.newWindow();
-          break;
-        case 37: // left
-        case 72: // H
-          index--;
+      this.container = this.terminal.container;
+      this.terminal.container = null;
 
-          if (index < 0) {
-            index = windows.length - 1;
-          }
+      var statusbar = this.terminal.statusbar;
+      this.terminal.statusbar = null;
 
-          Tmux.use(windows[index]);
-          break;
-        case 39: // right
-        case 76: // L
-          index++;
+      var statusList = document.createElement('ul');
+      this.rootTab = this.createTabLabel(true, 0).tab;
+      statusbar.appendChild(statusList);
+      this.statusbar = statusList;
+    }
+  }, {
+    key: 'listen',
+    value: function listen() {
+      var _this = this;
 
-          if (index >= windows.length) {
-            index = 0;
-          }
+      this.keyDownListener = window.onkeydown || function () {};
+      window.onkeydown = this.onKeyDown.bind(this);
 
-          Tmux.use(windows[index]);
-          break;
-        case 81: // Q
-          Tmux.removeWindow(windows[index]);
-          windows.splice(index, 1);
+      Object.defineProperty(window, 'onkeydown', {
+        set: function set(value) {
+          return _this.keyDownListener = value;
+        },
+        get: function get() {
+          return _this.keyDownListener;
+        } });
+    }
+  }, {
+    key: 'onKeyDown',
+    value: function onKeyDown(event) {
+      if (this.waiting) {
+        this.waiting = false;
 
-          if (windows.length) {
-            index--;
-            if (index < 0) {
-              index = 0;
+        switch (event.keyCode) {
+          case 67:
+            // C
+            this.newWindow();
+            break;
+          case 37: // left
+          case 72:
+            // H
+            this.index--;
+
+            if (this.index < 0) {
+              this.index = this.windows.length - 1;
             }
 
-            Tmux.use(windows[index]);
-          }
+            this.use(this.windows[this.index]);
+            break;
+          case 39: // right
+          case 76:
+            // L
+            this.index++;
+
+            if (this.index >= this.windows.length) {
+              this.index = 0;
+            }
+
+            this.use(this.windows[this.index]);
+            break;
+          case 81:
+            // Q
+            this.removeWindow(this.windows[this.index]);
+            this.windows.splice(this.index, 1);
+
+            if (this.windows.length) {
+              this.index--;
+              if (this.index < 0) {
+                this.index = 0;
+              }
+
+              this.use(this.windows[this.index]);
+            } else {
+              this.container.innerHTML = '';
+            }
+            break;
+        }
+
+        return;
       }
 
-      return;
+      if (event.keyCode === 66 && event.ctrlKey) {
+        // C-b
+        this.waiting = true;
+      } else if (this.keyDownListener) {
+        this.keyDownListener(event);
+      }
     }
+  }, {
+    key: 'createTabLabel',
+    value: function createTabLabel(indexOnly, id) {
+      var tab = document.createElement('li');
+      var index = document.createElement('span');
+      var data = document.createElement('span');
 
-    if (event.keyCode === 66 && event.ctrlKey) { // C-b
-      waiting = true;
-    } else if (_onkeydown) {
-      _onkeydown(event);
+      data.className = 'data';
+      index.className = 'index';
+      index.innerText = id;
+
+      tab.appendChild(data);
+      data.appendChild(index);
+
+      var ps = null;
+      if (!indexOnly) {
+        ps = document.createElement('span');
+        ps.className = 'ps';
+        data.appendChild(ps);
+      }
+
+      return {
+        tab: tab,
+        ps: ps
+      };
     }
-  };
+  }, {
+    key: 'newWindow',
+    value: function newWindow() {
+      var w = document.createElement('div');
+      w.className = 'tmux';
 
-  Object.defineProperty(window, 'onkeydown', {
-    set: function (value) {
-      _onkeydown = value;
-    },
-    get: function () {
-      return _onkeydown;
+      var id = 1;
+      for (var i = 0, l = this.windows.length; i < l; i++) {
+        if (this.windows[i].id !== id) {
+          break;
+        } else {
+          id++;
+        }
+      }
+
+      var window = {
+        id: id,
+        window: w,
+        tab: this.createTabLabel(false, id)
+      };
+
+      this.index = i;
+      this.windows.push(window);
+
+      this.use(window);
+      this.update();
     }
-  });
-};
+  }, {
+    key: 'use',
+    value: function use(window) {
+      if (this.using) {
+        this.using.tab.tab.className = false;
+        this.using.currentPath = this.terminal.currentPath;
+      }
 
-Tmux.createTabLabel = function (indexOnly, id) {
-  var tab = document.createElement('li');
+      this.container.innerHTML = '';
+      this.container.appendChild(window.window);
 
-  var data = document.createElement('span');
-  data.className = 'data';
+      this.terminal.container = window.window;
+      this.terminal.statusbar = window.tab.ps;
 
-  var index = document.createElement('span');
-  index.className = 'index';
-  index.innerText = id;
+      window.tab.tab.className = 'active';
 
-  data.appendChild(index);
-  tab.appendChild(data);
+      if (window.currentPath) {
+        this.terminal.FS.currentPath = window.currentPath;
+      }
 
-  var ps = null;
-  if (!indexOnly) {
-    ps = document.createElement('span');
-    ps.className = 'ps';
-    data.appendChild(ps);
-  }
-
-  return {
-    tab: tab,
-    ps: ps
-  };
-};
-
-Tmux.newWindow = function () {
-  var w = document.createElement('div');
-  w.className = 'tmux';
-
-  var id = 1;
-  for (var i = 0, l = windows.length; i < l; i++) {
-    if (windows[i].id !== id) {
-      break;
-    } else {
-      id++;
+      this.terminal.update();
+      this.using = window;
     }
-  }
+  }, {
+    key: 'update',
+    value: function update() {
+      var _this2 = this;
 
-  var window = {
-    id: id,
-    window: w,
-    tab: this.createTabLabel(false, id)
-  };
+      this.windows = this.windows.sort(function (a, b) {
+        return a.id - b.id;
+      });
 
-  index = i;
-  windows.push(window);
+      this.statusbar.innerHTML = '';
+      this.statusbar.appendChild(this.rootTab);
 
-  this.use(window);
-  this.update();
-};
+      this.windows.forEach(function (window) {
+        _this2.statusbar.appendChild(window.tab.tab);
+      });
+    }
+  }, {
+    key: 'removeWindow',
+    value: function removeWindow(window) {
+      this.statusbar.removeChild(window.tab.tab);
+    }
+  }]);
 
-var using = null;
-Tmux.use = function (window) {
-  if (using) {
-    using.tab.tab.className = false;
-    using.currentPath = FS.currentPath;
-  }
+  return Tmux;
+})();
 
-  Terminal._container.innerHTML = '';
-  Terminal._container.appendChild(window.window);
-
-  Terminal.container = window.window;
-  Terminal.statusbar = window.tab.ps;
-
-  window.tab.tab.className = 'active';
-
-  if (window.currentPath) {
-    FS.currentPath = window.currentPath;
-  }
-
-  Terminal.update();
-  using = window;
-};
-
-Tmux.update = function () {
-  windows = windows.sort(function (a, b) {
-    return a.id - b.id;
-  });
-
-  Terminal._statusbar.innerHTML = '';
-  Terminal._statusbar.appendChild(this.rootTab);
-
-  windows.forEach(function (window) {
-    Terminal._statusbar.appendChild(window.tab.tab);
-  });
-};
-
-Tmux.removeWindow = function (window) {
-  Terminal._statusbar.removeChild(window.tab.tab);
-};
-
-module.exports = Tmux;
+exports['default'] = Tmux;
+module.exports = exports['default'];
 
 },{}]},{},["N8OV1Y"])

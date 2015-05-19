@@ -12,12 +12,11 @@
     <script src="../node_modules/zsh.js/dist/zsh.js"></script>
     <script src="../dist/tmux.min.js"></script>
     <script>
-var zsh = require('zsh.js'),
-    tmux = require('tmux.js'),
-    fs = require('zsh.js/lib/fs');
+var zsh = require('zsh.js');
+var tmux = require('tmux.js');
 
-zsh.create('container');
-tmux.init(zsh, fs);
+var terminal = new zsh('container', null, true);
+new tmux(terminal);
     </script>
   </body>
 </html>
